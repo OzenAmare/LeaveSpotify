@@ -102,4 +102,10 @@ fn main() {
 // spotify docs https://developer.spotify.com/documentation/web-api
 // spotify get album api https://developer.spotify.com/documentation/web-api/reference/get-users-saved-albums
 // spotify get playlists https://developer.spotify.com/documentation/web-api/reference/get-playlist
+
+//IDEA HERE: 
+// 1st: take the albums and playlists of the user^^^
+// 2nd: go to a series of places to purchase from that exist
+// 3rd: look at each album and see what would cost what
+// 4th: look at each playlist and see what they'd cost
 }
