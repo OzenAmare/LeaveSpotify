@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
+use reqwest;
+use tokio;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Track {
     pub album: SimplifiedAlbum,
@@ -98,14 +99,51 @@ pub struct LinkedTrack {
 }
 
 
-fn main() {
+
+#[tokio::main]
+async fn main() -> Result<(), reqwest::Error>{
+
+
+    let spotify_key = if let Some(spotify_key) = std::env::args().nth(1){
+        spotify_key
+    }else{
+        let error_message:&str = "please provide a proper key";
+        eprintln!("Error: {:?}", error_message);
+        error_message.into()
+        
+    };
+
+    let client = reqwest::Client::new();
+
+    let spotify_user_profile_endpoint = "https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=5";
+
+    let spotify_response= client.get(spotify_user_profile_endpoint)
+        .bearer_auth(spotify_key)
+        .send()
+        .await?;
+
+    
+    eprintln!("Response: {:?} {}", spotify_response.version(), spotify_response.status());
+    eprintln!("Headers: {:#?}\n", spotify_response.headers());
+
+    let body = spotify_response.text().await?;
+
+    eprintln!("{body}");
+
+
+
+
+
+    Ok(())
+
 // spotify docs https://developer.spotify.com/documentation/web-api
 // spotify get album api https://developer.spotify.com/documentation/web-api/reference/get-users-saved-albums
 // spotify get playlists https://developer.spotify.com/documentation/web-api/reference/get-playlist
 
 //IDEA HERE: 
-// 1st: take the albums and playlists of the user^^^
-// 2nd: go to a series of places to purchase from that exist
+// 1st: take the albums and playlists of the user^^
+// // 2nd: go to a series of places to purchase from that exist
 // 3rd: look at each album and see what would cost what
 // 4th: look at each playlist and see what they'd cost
+
 }
