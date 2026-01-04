@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use reqwest;
 use tokio;
+use http::StatusCode;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Track {
     pub album: SimplifiedAlbum,
@@ -100,6 +102,17 @@ pub struct LinkedTrack {
 
 
 
+#[derive(Debug, Serialize, Deserialize)]
+struct Post {
+    id: Option<i32>,
+    title: String,
+    body: String,
+    #[serde(rename = "userId")]
+    user_id: i32,
+}
+
+
+
 #[tokio::main]
 async fn main() -> Result<(), reqwest::Error>{
 
@@ -110,6 +123,7 @@ async fn main() -> Result<(), reqwest::Error>{
         let error_message:&str = "please provide a proper key";
         eprintln!("Error: {:?}", error_message);
         error_message.into()
+       
         
     };
 
@@ -122,9 +136,18 @@ async fn main() -> Result<(), reqwest::Error>{
         .send()
         .await?;
 
+    //let key_check = assert!(spotify_response.status(), StatusCode::OK);
+
+
+
+ 
     
+
     eprintln!("Response: {:?} {}", spotify_response.version(), spotify_response.status());
     eprintln!("Headers: {:#?}\n", spotify_response.headers());
+
+    //let mut = HashMap::new();
+    
 
     let body = spotify_response.text().await?;
 
